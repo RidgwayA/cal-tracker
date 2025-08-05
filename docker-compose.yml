@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: calorie-tracker-db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backEnd/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - app-network
+    restart: unless-stopped
+
+  # Backend + Frontend Application
+  app:
+    build: .
+    container_name: calorie-tracker-app
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      DB_HOST: postgres
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 4000
+
+    ports:
+      - "4001:4000"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    restart: unless-stopped
+    volumes:
+      # Optional: mount logs directory
+      - ./logs:/app/logs
+
+  # Optional: pgAdmin for database management
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: calorie-tracker-pgadmin
+    env_file:
+      - .env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
