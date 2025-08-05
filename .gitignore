@@ -1,0 +1,28 @@
+# Environment variables
+.env
+.env.*
+.env.local
+.env.development
+.env.production
+.env.test
+frontEnd/.env*
+backEnd/.env*
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+
+
+# Docker
+.dockerignore
