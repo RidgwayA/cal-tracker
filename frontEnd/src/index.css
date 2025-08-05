@@ -1,0 +1,60 @@
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+
+@theme{
+
+
+    /* Background Colors */
+    --color-bgDark: #2E3138;          
+    --color-bgLight: #BCE7FD;         
+    --color-bgCard: #F5F6FA;         
+    --color-surface: #FFFFFF;  
+    --color-borderLight: #E5E7EB;
+    --color-borderDark: #2E3138 ;
+    
+    /* Text colors */
+    --color-textPrimary: #1F2937;    
+    --color-textSecondary: #6B7280;   
+    --color-textInverse: #F9FAFB;     
+
+    /* Brand and Accent Colors */
+    --color-myBlack:#000000;
+    --color-myWhite: #ffffff;
+    --color-offWhite: #F0F0F0;
+    --color-neutral: #708090;
+
+    --color-primary: #3B82F6;         
+    --color-primaryHover: #2563EB;    
+    --color-primaryAlt: #EF4444 ;
+    --color-primaryHoverAlt: #DC2626 ;
+
+    --color-accent: #22D3EE;           
+    --color-accentAlt: #8B5CF6; 
+    --color-goalStart:#5CFF98;
+    --color-goalEnd: #00A63E;
+
+
+    --color-optionSelected: #eff6ff;     
+
+    /* Meal Macro Colors */
+    --color-calories: #F97316;         
+    --color-protein: #3B82F6;          
+    --color-carbs: #72a53b;          
+    --color-fat: #AA09C3;          
+
+    /*  Utility Colors */
+    --color-shadowDark:#1f2937 ;
+        
+    --color-success: #10b981; 
+    --color-successHover: #0B835B; 
+    --color-successBg: #d1fae5;
+    --color-successBorder: #6ee7b7;
+
+    --color-error: #dc2626;
+    --color-errorHover: #7B1414 ;        
+    --color-errorBg: #fee2e2;      
+    --color-errorBorder: #fecaca;  
+
+}
