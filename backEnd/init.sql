@@ -31,5 +31,7 @@ CREATE TABLE foods (
     protein INTEGER DEFAULT 0,
     carbs INTEGER DEFAULT 0,
     fat INTEGER DEFAULT 0,
+    serving_size VARCHAR(255) NOT NULL,
+    serving_count DECIMAL(5,2) DEFAULT 1,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

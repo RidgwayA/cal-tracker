@@ -6,4 +6,6 @@ export interface Food {
   protein: number;
   carbs: number;
   fat: number;
+  serving_size: string;
+  serving_count: number;
 }

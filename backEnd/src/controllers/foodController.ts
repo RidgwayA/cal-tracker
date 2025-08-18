@@ -26,15 +26,15 @@ const updateMealTotalCalories = async (mealId: number) => {
 // POST /api/foods/:mealId
 export const addFoodToMeal = async (req: Request, res: Response) => {
   const { mealId } = req.params;
-  const { name, calories, protein, carbs = 0, fat = 0 } = req.body;
+  const { name, calories, protein, carbs = 0, fat = 0, serving_size, serving_count } = req.body;
 
   try {
     // Insert the new food
     const result = await pool.query(
-      `INSERT INTO foods (meal_id, name, calories, protein, carbs, fat)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO foods (meal_id, name, calories, protein, carbs, fat, serving_size, serving_count)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
        RETURNING *`,
-      [mealId, name, calories, protein, carbs, fat]
+      [mealId, name, calories, protein, carbs, fat, serving_size, serving_count]
     );
 
     // Update the meal's total calories
@@ -66,7 +66,7 @@ export const getFoodsByMeal = async (req: Request, res: Response) => {
 // PUT /api/foods/:foodId
 export const updateFood = async (req: Request, res: Response) => {
   const { foodId } = req.params;
-  const { name, calories, protein, carbs = 0, fat = 0 } = req.body;
+  const { name, calories, protein, carbs = 0, fat = 0, serving_size, serving_count } = req.body;
 
   try {
     // First get the meal_id for this food
@@ -84,10 +84,10 @@ export const updateFood = async (req: Request, res: Response) => {
     // Update the food
     const result = await pool.query(
       `UPDATE foods 
-       SET name = $1, calories = $2, protein = $3, carbs = $4, fat = $5
-       WHERE id = $6
+       SET name = $1, calories = $2, protein = $3, carbs = $4, fat = $5, serving_size = $6, serving_count = $7
+       WHERE id = $8
        RETURNING *`,
-      [name, calories, protein, carbs, fat, foodId]
+      [name, calories, protein, carbs, fat, serving_size, serving_count, foodId]
     );
 
     // Update the meal's total calories

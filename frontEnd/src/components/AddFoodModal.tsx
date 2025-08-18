@@ -14,6 +14,8 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
     protein: "",
     carbs: "",
     fat: "",
+    serving_size: "",
+    serving_count: "1",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,15 +25,18 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const servingCount = Number(form.serving_count);
     const res = await fetch(`/api/foods/${mealId}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: form.name,
-        calories: Number(form.calories),
-        protein: Number(form.protein),
-        carbs: Number(form.carbs) || 0,
-        fat: Number(form.fat) || 0,
+        calories: Number(form.calories) * servingCount,
+        protein: Number(form.protein) * servingCount,
+        carbs: (Number(form.carbs) || 0) * servingCount,
+        fat: (Number(form.fat) || 0) * servingCount,
+        serving_size: form.serving_size,
+        serving_count: servingCount,
       }),
     });
 
@@ -74,6 +79,37 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
               />
             </div>
 
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs font-medium text-textPrimary mb-1">Serving Size</label>
+                <input
+                  name="serving_size"
+                  value={form.serving_size}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm border border-borderDark rounded-lg"
+                  placeholder="e.g., 100g, 1 cup"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-textPrimary mb-1">Servings</label>
+                <input
+                  name="serving_count"
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  value={form.serving_count}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm border border-borderDark rounded-lg"
+                  placeholder="1"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <p>Nutritional Facts are Per Serving</p>
+            </div>
+
             <div>
               <label className="block text-xs font-medium text-textPrimary mb-1">Calories</label>
               <input
@@ -88,7 +124,7 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
             </div>
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <label className="block text-xs font-medium text-textPrimary mb-1">Protein (g)</label>
+                <label className="block text-xs font-medium text-textPrimary mb-1">Protein</label>
                 <input
                   name="protein"
                   type="number"
@@ -101,7 +137,7 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-textPrimary mb-1">Carbs (g)</label>
+                <label className="block text-xs font-medium text-textPrimary mb-1">Carbs</label>
                 <input
                   name="carbs"
                   type="number"
@@ -113,7 +149,7 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-textPrimary mb-1">Fat (g)</label>
+                <label className="block text-xs font-medium text-textPrimary mb-1">Fat</label>
                 <input
                   name="fat"
                   type="number"

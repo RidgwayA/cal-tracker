@@ -6,6 +6,8 @@ export type FoodType = {
   protein: number;
   carbs: number;
   fat: number;
+  serving_size: string;
+  serving_count: number;
 };
 
 export type MealType = {

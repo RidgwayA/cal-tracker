@@ -7,10 +7,12 @@ type Props = {
 };
 
 const FoodItemRow = ({ food, onEdit, onDelete }: Props) => (
-  <div className="flex items-center justify-between p-2 bg-white rounded shadow-sm">
+  <div className="flex items-center justify-between p-2 mb-5 bg-offWhite rounded shadow-md hover:shadow-lg">
     <div>
       <p className="font-medium">{food.name}</p>
-      <p className="text-sm text-textPrimary">{food.calories} kcal</p>
+      <p className="text-sm text-textPrimary">Total kcal: {food.calories} </p>
+      <p className="text-sm text-textPrimary">Total protien: {food.protein} </p>
+      <p className="text-xs text-textSecondary">Servings: {food.serving_count}</p>
     </div>
     <div className="space-x-2">
       <button onClick={() => onEdit(food)} className="text-primary cursor-pointer font-bold hover:underline">Edit</button>

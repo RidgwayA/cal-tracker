@@ -10,10 +10,12 @@ type EditFoodProps = {
 const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
   const [form, setForm] = useState({
     name: food.name,
-    calories: food.calories.toString(),
-    protein: food.protein.toString(),
-    carbs: food.carbs.toString(),
-    fat: food.fat.toString(),
+    calories: (food.calories / (food.serving_count || 1)).toString(),
+    protein: (food.protein / (food.serving_count || 1)).toString(),
+    carbs: (food.carbs / (food.serving_count || 1)).toString(),
+    fat: (food.fat / (food.serving_count || 1)).toString(),
+    serving_size: food.serving_size || "1 serving",
+    serving_count: (food.serving_count || 1).toString(),
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,15 +25,18 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    const servingCount = Number(form.serving_count);
     const res = await fetch(`/api/foods/${food.id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name: form.name,
-        calories: Number(form.calories),
-        protein: Number(form.protein),
-        carbs: Number(form.carbs) || 0,
-        fat: Number(form.fat) || 0,
+        calories: Number(form.calories) * servingCount,
+        protein: Number(form.protein) * servingCount,
+        carbs: (Number(form.carbs) || 0) * servingCount,
+        fat: (Number(form.fat) || 0) * servingCount,
+        serving_size: form.serving_size,
+        serving_count: servingCount,
       }),
     });
 
@@ -80,7 +85,34 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Calories</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Serving Size</label>
+              <input
+                name="serving_size"
+                value={form.serving_size}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-borderLight rounded-lg"
+                placeholder="e.g., 100g, 1 cup"
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Servings</label>
+              <input
+                name="serving_count"
+                type="number"
+                step="0.1"
+                min="0.1"
+                value={form.serving_count}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-borderLight rounded-lg"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-textPrimary mb-2">Calories (per serving)</label>
               <input
                 name="calories"
                 type="number"
@@ -91,7 +123,7 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Protein (g)</label>
+              <label className="block text-sm font-medium text-textPrimary mb-2">Protein (per serving)</label>
               <input
                 name="protein"
                 type="number"
@@ -106,7 +138,7 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Carbs (g)</label>
+              <label className="block text-sm font-medium text-textPrimary mb-2">Carbs (per serving)</label>
               <input
                 name="carbs"
                 type="number"
@@ -118,7 +150,7 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Fat (g)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">Fat (per serving)</label>
               <input
                 name="fat"
                 type="number"
