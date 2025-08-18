@@ -30,8 +30,8 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
         name: form.name,
         calories: Number(form.calories),
         protein: Number(form.protein),
-        carbs: Number(form.carbs),
-        fat: Number(form.fat),
+        carbs: Number(form.carbs) || 0,
+        fat: Number(form.fat) || 0,
       }),
     });
 
@@ -114,7 +114,7 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
                 value={form.carbs}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-borderLight rounded-lg "
-                required
+                placeholder="0"
               />
             </div>
             <div>
@@ -126,7 +126,7 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
                 value={form.fat}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-borderLight rounded-lg "
-                required
+                placeholder="0"
               />
             </div>
           </div>

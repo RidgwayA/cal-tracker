@@ -30,8 +30,8 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
         name: form.name,
         calories: Number(form.calories),
         protein: Number(form.protein),
-        carbs: Number(form.carbs),
-        fat: Number(form.fat),
+        carbs: Number(form.carbs) || 0,
+        fat: Number(form.fat) || 0,
       }),
     });
 
@@ -109,8 +109,7 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
                   value={form.carbs}
                   onChange={handleChange}
                   className="w-full px-2 py-2 text-sm border border-borderDark rounded "
-                  placeholder="5"
-                  required
+                  placeholder="0"
                 />
               </div>
               <div>
@@ -122,8 +121,7 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
                   value={form.fat}
                   onChange={handleChange}
                   className="w-full px-2 py-2 text-sm border border-borderDark rounded "
-                  placeholder="10"
-                  required
+                  placeholder="0"
                 />
               </div>
             </div>

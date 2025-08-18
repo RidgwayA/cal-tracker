@@ -26,7 +26,7 @@ const updateMealTotalCalories = async (mealId: number) => {
 // POST /api/foods/:mealId
 export const addFoodToMeal = async (req: Request, res: Response) => {
   const { mealId } = req.params;
-  const { name, calories, protein, carbs, fat } = req.body;
+  const { name, calories, protein, carbs = 0, fat = 0 } = req.body;
 
   try {
     // Insert the new food
@@ -66,7 +66,7 @@ export const getFoodsByMeal = async (req: Request, res: Response) => {
 // PUT /api/foods/:foodId
 export const updateFood = async (req: Request, res: Response) => {
   const { foodId } = req.params;
-  const { name, calories, protein, carbs, fat } = req.body;
+  const { name, calories, protein, carbs = 0, fat = 0 } = req.body;
 
   try {
     // First get the meal_id for this food
