@@ -3,10 +3,13 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import userRoutes from "./routes/userRoutes";
 import mealRoutes from "./routes/mealRoutes";
 import foodRoutes from "./routes/foodRoutes";
 import authRoutes from "./routes/authRoutes";
+import { protect } from "./auth/requireAuth";
 
 // Load environment variables
 dotenv.config();
@@ -14,15 +17,54 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      fontSrc: ["'self'"],
+      connectSrc: ["'self'"],
+    }
+  },
+  crossOriginEmbedderPolicy: false // Allow serving React app
+}));
 
-// API Routes
-app.use("/api/users", userRoutes);
-app.use("/api/meals", mealRoutes);
-app.use("/api/foods", foodRoutes);
-app.use("/api/auth", authRoutes);
+// Rate limiting for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 attempts per window per IP
+  message: { error: 'Too many authentication attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// General rate limiting for API endpoints
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requests per window per IP
+  message: { error: 'Too many requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// CORS configuration
+app.use(cors({
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+app.use(express.json({ limit: '10mb' })); // Add size limit
+
+// API Routes with rate limiting
+app.use("/api/auth", authLimiter, authRoutes); // Auth routes with strict rate limiting
+app.use("/api/users", apiLimiter, protect, userRoutes); // Protected with general rate limiting
+app.use("/api/meals", apiLimiter, protect, mealRoutes); // Protected with general rate limiting
+app.use("/api/foods", apiLimiter, protect, foodRoutes); // Protected with general rate limiting
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

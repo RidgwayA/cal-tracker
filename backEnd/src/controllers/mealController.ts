@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
 import { pool } from "../db";
+import { AuthRequest } from "../auth/requireAuth";
 
-export const getMealsByUser = async (req: Request, res: Response) => {
+export const getMealsByUser = async (req: AuthRequest, res: Response) => {
   const userId = req.params.userId;
+  const authenticatedUserId = req.user?.id;
+
+  // Authorization check: users can only access their own meals
+  if (Number(userId) !== authenticatedUserId) {
+    return res.status(403).json({ error: "Access denied: You can only view your own meals" });
+  }
 
   try {
     // Get today's date in YYYY-MM-DD format
@@ -66,11 +73,17 @@ export const getMealsByUser = async (req: Request, res: Response) => {
   }
 };
 
-export const addMeal = async (req: Request, res: Response) => {
+export const addMeal = async (req: AuthRequest, res: Response) => {
   const { user_id, meal_name, date } = req.body;
+  const authenticatedUserId = req.user?.id;
 
   if (!user_id || !meal_name) {
     return res.status(400).json({ error: "Missing fields in request body" });
+  }
+
+  // Authorization check: users can only create meals for themselves
+  if (Number(user_id) !== authenticatedUserId) {
+    return res.status(403).json({ error: "Access denied: You can only create meals for yourself" });
   }
 
   try {
@@ -89,10 +102,25 @@ export const addMeal = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteMeal = async (req: Request, res: Response) => {
+export const deleteMeal = async (req: AuthRequest, res: Response) => {
   const { mealId } = req.params;
+  const authenticatedUserId = req.user?.id;
 
   try {
+    // First check if the meal belongs to the authenticated user
+    const mealOwnerResult = await pool.query(
+      "SELECT user_id FROM meals WHERE id = $1",
+      [mealId]
+    );
+
+    if (mealOwnerResult.rows.length === 0) {
+      return res.status(404).json({ error: "Meal not found" });
+    }
+
+    const mealOwnerId = mealOwnerResult.rows[0].user_id;
+    if (mealOwnerId !== authenticatedUserId) {
+      return res.status(403).json({ error: "Access denied: You can only delete your own meals" });
+    }
     // First delete all foods associated with this meal
     await pool.query("DELETE FROM foods WHERE meal_id = $1", [mealId]);
     
@@ -114,9 +142,14 @@ export const deleteMeal = async (req: Request, res: Response) => {
 };
 
 // NEW: Get meals for a specific date (for future date navigation feature)
-export const getMealsByUserAndDate = async (req: Request, res: Response) => {
+export const getMealsByUserAndDate = async (req: AuthRequest, res: Response) => {
   const { userId, date } = req.params;
-  // console.log("[DEBUG] Fetching meals for user:", userId, "on date:", date);
+  const authenticatedUserId = req.user?.id;
+
+  // Authorization check: users can only access their own meals
+  if (Number(userId) !== authenticatedUserId) {
+    return res.status(403).json({ error: "Access denied: You can only view your own meals" });
+  }
 
   try {
     const mealsResult = await pool.query(

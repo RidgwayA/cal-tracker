@@ -1,9 +1,16 @@
 import { Request, Response } from "express";
 import { pool } from "../db";
+import { AuthRequest } from "../auth/requireAuth";
 
 
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: AuthRequest, res: Response) => {
   const userId = Number(req.params.id);
+  const authenticatedUserId = req.user?.id;
+
+  // Authorization check: users can only access their own profile
+  if (userId !== authenticatedUserId) {
+    return res.status(403).json({ error: "Access denied: You can only view your own profile" });
+  }
 
   try {
     const result = await pool.query(
@@ -23,9 +30,15 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 
-export const updateUserPreferences = async (req: Request, res: Response) => {
+export const updateUserPreferences = async (req: AuthRequest, res: Response) => {
   const userId = Number(req.params.id);
+  const authenticatedUserId = req.user?.id;
   const { name, email, date_of_birth, daily_calorie_goal, daily_protein_goal } = req.body;
+
+  // Authorization check: users can only update their own profile
+  if (userId !== authenticatedUserId) {
+    return res.status(403).json({ error: "Access denied: You can only update your own profile" });
+  }
 
   const fieldsToUpdate = [];
   const values = [];

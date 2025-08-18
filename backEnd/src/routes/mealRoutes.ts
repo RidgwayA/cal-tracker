@@ -5,11 +5,12 @@ import {
   getMealsByUser,
   getMealsByUserAndDate,
 } from "../controllers/mealController";
+import { validateMeal } from "../middleware/validation";
 
 const router = Router();
 
 // Add a new meal
-router.post("/", addMeal);
+router.post("/", validateMeal, addMeal);
 
 // Delete a meal and all its foods
 router.delete("/:mealId", deleteMeal);
