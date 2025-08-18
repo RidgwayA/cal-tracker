@@ -7,6 +7,7 @@ import MealActions from "./MealActions";
 import MealDetailsModal from "../MealDetailsModal";
 import AddFoodModal from "../AddFoodModal";
 import EditFoodModal from "../EditFoodModal";
+import ConfirmationModal from "../ConfirmationModal";
 
 type Props = {
   meal: MealType;
@@ -22,6 +23,13 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
   const [editingFood, setEditingFood] = useState<FoodType | null>(null);
   const [foods, setFoods] = useState<FoodType[]>(meal.foods || []);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<{
+    isOpen: boolean;
+    type: 'food' | 'meal';
+    id?: number;
+    title: string;
+    message: string;
+  }>({ isOpen: false, type: 'food', title: '', message: '' });
 
   const handleAddFood = (newFood: FoodType) => {
     setFoods(prev => [...prev, newFood]);
@@ -33,8 +41,18 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
     onFoodUpdated?.(meal.id, updatedFood);
   };
 
-  const handleDeleteFood = async (foodId: number) => {
-    if (!confirm("Delete this food item?")) return;
+  const handleDeleteFood = (foodId: number) => {
+    const food = foods.find(f => f.id === foodId);
+    setConfirmDelete({
+      isOpen: true,
+      type: 'food',
+      id: foodId,
+      title: 'Delete Food Item',
+      message: `Are you sure you want to delete "${food?.name}"? This action cannot be undone.`
+    });
+  };
+
+  const confirmDeleteFood = async (foodId: number) => {
     const res = await fetch(`/api/foods/${foodId}`, { method: "DELETE" });
     if (res.ok) {
       setFoods(prev => prev.filter(food => food.id !== foodId));
@@ -42,16 +60,39 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
     } else {
       alert("Failed to delete food item");
     }
+    setConfirmDelete(prev => ({ ...prev, isOpen: false }));
   };
 
-  const handleDeleteMeal = async () => {
-    if (!confirm("Delete this meal and its foods?")) return;
+  const handleDeleteMeal = () => {
+    setConfirmDelete({
+      isOpen: true,
+      type: 'meal',
+      id: meal.id,
+      title: 'Delete Meal',
+      message: `Are you sure you want to delete "${meal.meal_name}" and all its food items? This action cannot be undone.`
+    });
+  };
+
+  const confirmDeleteMeal = async () => {
     const res = await fetch(`/api/meals/${meal.id}`, { method: "DELETE" });
     if (res.ok) {
       onMealDeleted?.(meal.id);
     } else {
       alert("Failed to delete meal");
     }
+    setConfirmDelete(prev => ({ ...prev, isOpen: false }));
+  };
+
+  const handleConfirmAction = () => {
+    if (confirmDelete.type === 'food' && confirmDelete.id) {
+      confirmDeleteFood(confirmDelete.id);
+    } else if (confirmDelete.type === 'meal') {
+      confirmDeleteMeal();
+    }
+  };
+
+  const handleCancelAction = () => {
+    setConfirmDelete(prev => ({ ...prev, isOpen: false }));
   };
 
   return (
@@ -73,6 +114,16 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
       {showDetails && <MealDetailsModal foods={foods} onClose={() => setShowDetails(false)} />}
       {showAddFood && <AddFoodModal mealId={meal.id} onClose={() => setShowAddFood(false)} onAdd={handleAddFood} />}
       {editingFood && <EditFoodModal food={editingFood} onClose={() => setEditingFood(null)} onUpdate={handleUpdateFood} />}
+      <ConfirmationModal
+        isOpen={confirmDelete.isOpen}
+        title={confirmDelete.title}
+        message={confirmDelete.message}
+        confirmText="Delete"
+        cancelText="Cancel"
+        onConfirm={handleConfirmAction}
+        onCancel={handleCancelAction}
+        variant="danger"
+      />
     </div>
   );
 };
