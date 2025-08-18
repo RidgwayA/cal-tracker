@@ -2,7 +2,6 @@ import { type MealType } from "../../types";
 
 type Props = {
   meal: MealType;
-  readOnly: boolean;
   onDelete: () => void;
 };
 
@@ -15,7 +14,7 @@ const getMealIcon = (mealName: string) => {
   return "🍽️";
 };
 
-const MealHeader = ({ meal, readOnly, onDelete }: Props) => (
+const MealHeader = ({ meal, onDelete }: Props) => (
   <div className="p-6 border-b">
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-3">
@@ -27,7 +26,7 @@ const MealHeader = ({ meal, readOnly, onDelete }: Props) => (
           <p className="text-sm text-textPrimary">{meal.foods?.length || 0} items</p>
         </div>
       </div>
-      <button onClick={onDelete} disabled={readOnly} className={`p-2 ${readOnly ? "cursor-not-allowed text-textPrimary " : "hover:bg-bgDark/10 rounded cursor-pointer"}`}>
+      <button onClick={onDelete} className="p-2 hover:bg-bgDark/10 rounded cursor-pointer">
         🗑️
       </button>
     </div>

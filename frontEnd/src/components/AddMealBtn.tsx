@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { type MealType } from "../types";
 
-type Props = { setMeals: React.Dispatch<React.SetStateAction<MealType[]>> };
+type Props = { 
+  setMeals: React.Dispatch<React.SetStateAction<MealType[]>>;
+  selectedDate: string;
+};
 
-const AddMealBtn = ({ setMeals }: Props) => {
+const AddMealBtn = ({ setMeals, selectedDate }: Props) => {
   const [showModal, setShowModal] = useState(false);
   const [mealName, setMealName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +30,7 @@ const AddMealBtn = ({ setMeals }: Props) => {
         body: JSON.stringify({ 
           meal_name: mealName, 
           user_id: Number(userId), 
-          date: new Date().toISOString().split('T')[0]
+          date: selectedDate
         }),
         headers: { "Content-Type": "application/json" },
       });

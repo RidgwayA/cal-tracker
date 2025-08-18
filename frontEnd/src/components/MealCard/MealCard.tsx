@@ -14,10 +14,9 @@ type Props = {
   onFoodUpdated?: (mealId: number, updatedFood: FoodType) => void;
   onFoodDeleted?: (mealId: number, foodId: number) => void;
   onMealDeleted?: (mealId: number) => void;
-  readOnly?: boolean;
 };
 
-const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDeleted, readOnly = false }: Props) => {
+const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDeleted }: Props) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showAddFood, setShowAddFood] = useState(false);
   const [editingFood, setEditingFood] = useState<FoodType | null>(null);
@@ -57,25 +56,23 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
 
   return (
     <div className="bg-bgCard rounded-2xl shadow-xl border overflow-hidden">
-      <MealHeader meal={meal} readOnly={readOnly} onDelete={handleDeleteMeal} />
+      <MealHeader meal={meal} onDelete={handleDeleteMeal} />
       <MealMacros foods={foods} />
       <FoodList
         foods={foods}
         isExpanded={isExpanded}
         setIsExpanded={setIsExpanded}
-        readOnly={readOnly}
         onEdit={setEditingFood}
         onDelete={handleDeleteFood}
       />
       <MealActions
         foods={foods}
-        readOnly={readOnly}
         onAdd={() => setShowAddFood(true)}
         onViewDetails={() => setShowDetails(true)}
       />
       {showDetails && <MealDetailsModal foods={foods} onClose={() => setShowDetails(false)} />}
-      {!readOnly && showAddFood && <AddFoodModal mealId={meal.id} onClose={() => setShowAddFood(false)} onAdd={handleAddFood} />}
-      {!readOnly && editingFood && <EditFoodModal food={editingFood} onClose={() => setEditingFood(null)} onUpdate={handleUpdateFood} />}
+      {showAddFood && <AddFoodModal mealId={meal.id} onClose={() => setShowAddFood(false)} onAdd={handleAddFood} />}
+      {editingFood && <EditFoodModal food={editingFood} onClose={() => setEditingFood(null)} onUpdate={handleUpdateFood} />}
     </div>
   );
 };
