@@ -4,16 +4,16 @@ import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken";
 
 export const registerUser = async (req: Request, res: Response) => {
-  const { name, email, password, date_of_birth } = req.body;
+  const { name, email, password, date_of_birth, daily_calorie_goal, daily_protein_goal } = req.body;
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
-      `INSERT INTO users (name, email, password, date_of_birth)
-       VALUES ($1, $2, $3, $4)
-       RETURNING id, name, email, date_of_birth`,
-      [name, email, hashedPassword, date_of_birth]
+      `INSERT INTO users (name, email, password, date_of_birth, daily_calorie_goal, daily_protein_goal)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       RETURNING id, name, email, date_of_birth, daily_calorie_goal, daily_protein_goal`,
+      [name, email, hashedPassword, date_of_birth, daily_calorie_goal, daily_protein_goal]
     );
 
     res.status(201).json(result.rows[0]);

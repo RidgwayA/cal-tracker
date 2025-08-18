@@ -6,9 +6,12 @@ const Registration = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    confirmEmail: "",
     password: "",
+    confirmPassword: "",
     dateOfBirth: "",
     dailyCalorieGoal: "",
+    dailyProteinGoal: "",
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +23,23 @@ const Registration = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+
+    // Validation
+    if (formData.email !== formData.confirmEmail) {
+      setError("Email addresses do not match");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -32,6 +52,7 @@ const Registration = () => {
           password: formData.password,
           date_of_birth: formData.dateOfBirth,
           daily_calorie_goal: parseInt(formData.dailyCalorieGoal),
+          daily_protein_goal: parseInt(formData.dailyProteinGoal),
         }),
       });
 
@@ -100,12 +121,38 @@ const Registration = () => {
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-textPrimary mb-2">Confirm Email Address</label>
+              <input
+                type="email"
+                name="confirmEmail"
+                placeholder="Confirm your email"
+                value={formData.confirmEmail}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-borderDark rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 bg-bgCard text-textPrimary"
+                required
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-textPrimary mb-2">Password</label>
               <input
                 type="password"
                 name="password"
-                placeholder="Create a secure password"
+                placeholder="Create a secure password (min 6 characters)"
                 value={formData.password}
+                onChange={handleChange}
+                className="w-full px-4 py-3 border border-borderDark rounded-lg transition-all duration-200 bg-bgCard text-textPrimary"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-textPrimary mb-2">Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Confirm your password"
+                value={formData.confirmPassword}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-borderDark rounded-lg transition-all duration-200 bg-bgCard text-textPrimary"
                 required
@@ -124,19 +171,35 @@ const Registration = () => {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Daily Calorie Goal</label>
-              <input
-                type="number"
-                name="dailyCalorieGoal"
-                placeholder="e.g., 2000"
-                value={formData.dailyCalorieGoal}
-                onChange={handleChange}
-                min="1000"
-                max="5000"
-                className="w-full px-4 py-3 border border-borderDark rounded-lg  transition-all duration-200 bg-bgCard text-textPrimary"
-                required
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-textPrimary mb-2">Daily Calorie Goal</label>
+                <input
+                  type="number"
+                  name="dailyCalorieGoal"
+                  placeholder="e.g., 2000"
+                  value={formData.dailyCalorieGoal}
+                  onChange={handleChange}
+                  min="1000"
+                  max="5000"
+                  className="w-full px-4 py-3 border border-borderDark rounded-lg transition-all duration-200 bg-bgCard text-textPrimary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-textPrimary mb-2">Daily Protein Goal (g)</label>
+                <input
+                  type="number"
+                  name="dailyProteinGoal"
+                  placeholder="e.g., 150"
+                  value={formData.dailyProteinGoal}
+                  onChange={handleChange}
+                  min="50"
+                  max="500"
+                  className="w-full px-4 py-3 border border-borderDark rounded-lg transition-all duration-200 bg-bgCard text-textPrimary"
+                  required
+                />
+              </div>
             </div>
           </div>
 
