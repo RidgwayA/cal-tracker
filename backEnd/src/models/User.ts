@@ -5,4 +5,5 @@ export interface User {
   date_of_birth: string;
   hashed_password: string;
   daily_calorie_goal: number;
+  daily_protein_goal: number;
 }

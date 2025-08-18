@@ -13,6 +13,7 @@ const Profile = () => {
     email: "",
     date_of_birth: "",
     daily_calorie_goal: 2000,
+    daily_protein_goal: 150,
   });
 
   const [editingField, setEditingField] = useState<keyof UserType | null>(null);
@@ -59,12 +60,12 @@ const Profile = () => {
     
  
     let processedValue = tempValue;
-    if (editingField === "daily_calorie_goal") {
+    if (editingField === "daily_calorie_goal" || editingField === "daily_protein_goal") {
       processedValue = Number(tempValue).toString();
     }
 
     const updatePayload = {
-      [editingField]: editingField === "daily_calorie_goal" ? Number(tempValue) : processedValue,
+      [editingField]: (editingField === "daily_calorie_goal" || editingField === "daily_protein_goal") ? Number(tempValue) : processedValue,
     };
 
     try {
@@ -143,6 +144,7 @@ const Profile = () => {
             </p>
             <p className="text-sm text-textPrimary/70">
               {key === "daily_calorie_goal" && "calories per day"}
+              {key === "daily_protein_goal" && "grams per day"}
             </p>
           </div>
           <button
@@ -221,6 +223,7 @@ const Profile = () => {
           {renderField("Email Address", "email", "text", "📧")}
           {renderField("Date of Birth", "date_of_birth", "date", "🎂")}
           {renderField("Daily Calorie Goal", "daily_calorie_goal", "number", "🎯")}
+          {renderField("Daily Protein Goal", "daily_protein_goal", "number", "💪")}
         </div>
       </main>
     </div>

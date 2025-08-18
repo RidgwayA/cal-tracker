@@ -23,4 +23,5 @@ export type UserType = {
   email: string;
   date_of_birth: string;
   daily_calorie_goal: number;
+  daily_protein_goal: number;
 };

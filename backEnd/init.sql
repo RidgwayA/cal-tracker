@@ -8,6 +8,7 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL,
     date_of_birth DATE,
     daily_calorie_goal INTEGER DEFAULT 2000,
+    daily_protein_goal INTEGER DEFAULT 150,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

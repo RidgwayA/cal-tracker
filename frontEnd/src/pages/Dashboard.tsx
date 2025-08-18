@@ -13,9 +13,9 @@ import {
 } from "../utils/dateUtils";
 import { fetchMealsForDate, getUserById } from "../services/api";
 
-import CalorieGoalDisplay from "../components/CalorieGoalDisplay";
-import CalorieCurrentDisplay from "../components/CalorieCurrentDisplay";
-import CalorieProgressDisplay from "../components/CalorieProgressDisplay";
+import CalorieGoalDisplay from "../components/GoalDisplay";
+import CalorieCurrentDisplay from "../components/DailyTotals";
+import CalorieProgressDisplay from "../components/ProgressBar";
 import AddMealBtn from "../components/AddMealBtn";
 import MealCard from "../components/MealCard/MealCard";
 import DateNavigation from "../components/DateNavigation";
@@ -27,6 +27,7 @@ const Dashboard = () => {
   const [userName, setUserName] = useState("");
   const [meals, setMeals] = useState<MealType[]>([]);
   const [calorieGoal, setCalorieGoal] = useState<number>(2000);
+  const [proteinGoal, setProteinGoal] = useState<number>(150);
   const [selectedDate, setSelectedDate] = useState<string>(getTodayDate());
 
   useEffect(() => {
@@ -48,6 +49,9 @@ const Dashboard = () => {
     getUserById(userIdNum).then((user) => {
       if (user?.daily_calorie_goal) {
         setCalorieGoal(user.daily_calorie_goal);
+      }
+      if (user?.daily_protein_goal) {
+        setProteinGoal(user.daily_protein_goal);
       }
     });
   }, [navigate, selectedDate]);
@@ -87,21 +91,27 @@ const Dashboard = () => {
     return sum + mealTotal;
   }, 0);
 
+  const totalProtein = meals.reduce((sum, meal) => {
+    const mealTotal = (meal.foods ?? []).reduce(
+      (fSum, food) => fSum + food.protein,
+      0
+    );
+    return sum + mealTotal;
+  }, 0);
+
   const isToday = isTodayDate(selectedDate);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-bgDark to-bgLight">
-
       <header className="bg-surface backdrop-blur-sm border-b border-borderLight sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center py-3">
             <div>
               <h1 className="text-2xl font-bold text-textPrimary">
                 Hello, {userName}!
               </h1>
               <p className="text-sm text-textPrimary/80">
-                Welcome to your personal calorie tracker, where you can keep
-                track of the nutritional infomation from the foods you eat!
+                Track your nutrition and reach your goals!
               </p>
             </div>
             <div className="flex items-center space-x-3">
@@ -123,7 +133,6 @@ const Dashboard = () => {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
         <DateNavigation
           selectedDate={selectedDate}
           onDateChange={handleDateChange}
@@ -131,10 +140,12 @@ const Dashboard = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <CalorieCurrentDisplay meals={meals} />
-          <CalorieGoalDisplay calorieGoal={calorieGoal} />
+          <CalorieGoalDisplay calorieGoal={calorieGoal} proteinGoal={proteinGoal} />
           <CalorieProgressDisplay
             totalCalories={totalCalories}
             calorieGoal={calorieGoal}
+            totalProtein={totalProtein}
+            proteinGoal={proteinGoal}
           />
         </div>
 
@@ -144,7 +155,7 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-textInverse">
                 Today's Meals
               </h2>
-              <AddMealBtn setMeals={setMeals} />
+              <AddMealBtn setMeals={setMeals} selectedDate={selectedDate} />
             </div>
           </div>
         )}
@@ -155,9 +166,7 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-textInverse">
                 Meals for {formatReadableDate(selectedDate)}
               </h2>
-              <div className="text-sm text-textPrimary bg-warningBg px-3 py-1 rounded-lg border border-warningBorder">
-                📖 View Only - Historical Data
-              </div>
+              <AddMealBtn setMeals={setMeals} selectedDate={selectedDate} />
             </div>
           </div>
         )}
@@ -182,11 +191,10 @@ const Dashboard = () => {
               <MealCard
                 key={meal.id}
                 meal={meal}
-                onFoodAdded={isToday ? handleFoodAdded : undefined}
-                onFoodUpdated={isToday ? handleFoodUpdated : undefined}
-                onFoodDeleted={isToday ? handleFoodDeleted : undefined}
-                onMealDeleted={isToday ? handleMealDeleted : undefined}
-                readOnly={!isToday}
+                onFoodAdded={handleFoodAdded}
+                onFoodUpdated={handleFoodUpdated}
+                onFoodDeleted={handleFoodDeleted}
+                onMealDeleted={handleMealDeleted}
               />
             ))}
           </div>

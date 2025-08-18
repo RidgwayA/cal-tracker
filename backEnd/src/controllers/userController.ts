@@ -7,7 +7,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
   try {
     const result = await pool.query(
-      "SELECT id, name, email, date_of_birth, daily_calorie_goal FROM users WHERE id = $1",
+      "SELECT id, name, email, date_of_birth, daily_calorie_goal, daily_protein_goal FROM users WHERE id = $1",
       [userId]
     );
 
@@ -25,7 +25,7 @@ export const getUserById = async (req: Request, res: Response) => {
 
 export const updateUserPreferences = async (req: Request, res: Response) => {
   const userId = Number(req.params.id);
-  const { name, email, date_of_birth, daily_calorie_goal } = req.body;
+  const { name, email, date_of_birth, daily_calorie_goal, daily_protein_goal } = req.body;
 
   const fieldsToUpdate = [];
   const values = [];
@@ -46,6 +46,10 @@ export const updateUserPreferences = async (req: Request, res: Response) => {
   if (daily_calorie_goal !== undefined) {
     fieldsToUpdate.push(`daily_calorie_goal = $${paramIndex++}`);
     values.push(daily_calorie_goal);
+  }
+  if (daily_protein_goal !== undefined) {
+    fieldsToUpdate.push(`daily_protein_goal = $${paramIndex++}`);
+    values.push(daily_protein_goal);
   }
 
   if (fieldsToUpdate.length === 0) {
