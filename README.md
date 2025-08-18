@@ -6,12 +6,28 @@ A fullstack calorie tracking web app built with TypeScript, React, Express, Post
 
 ## Features
 
-- JWT-based authentication
-- Calorie and macronutrient tracking
-- Add and edit meals and food items
-- Set and persist daily calorie goals
-- View progress by date
-- Dockerized backend and frontend
+- **Authentication**
+  - JWT-based auth with secure password requirements
+  - Password reset functionality with email tokens
+  - Real-time password validation with visual indicators
+  - Rate limiting for security
+  
+- **Nutrition Tracking**
+  - Calorie and macronutrient tracking
+  - Add and edit meals and food items
+  - Set and persist daily calorie and protein goals
+  - View progress by date
+  
+- **Modern UI/UX**
+  - Clean, responsive design with gradient backgrounds
+  - Real-time form validation feedback
+  - Loading states and error handling
+  - Consistent design system across all screens
+  
+- **Production Ready**
+  - Dockerized backend and frontend
+  - Input validation and sanitization
+  - Security middleware and CORS protection
 
 ---
 
@@ -33,16 +49,28 @@ A fullstack calorie tracking web app built with TypeScript, React, Express, Post
 
 ## Environment Variables
 
-Create a `.env` file in the root directory with values referenced in the example.env file
-
-### Installation (Local Dev)
+### Installation
 
 ```bash
 git clone https://github.com/your-username/fullstack-cal-tracker.git
 cd fullstack-cal-tracker
-cp .env.example .env
-# Add your own values to .env
+cp example.env .env
+# Edit .env with your actual values
 ```
+
+**Required Variables:**
+- `DB_*` - PostgreSQL database credentials
+- `JWT_SECRET` - Secret key for JWT tokens (make it long and random)
+- `GMAIL_*` - Gmail SMTP settings for password reset emails
+- `EMAIL_FROM` - Email address for outgoing messages
+- `PGADMIN_*` - pgAdmin web interface credentials
+
+**Gmail Setup for Password Reset:**
+1. Enable 2-factor authentication on your Gmail account
+2. Generate an "App Password" (not your regular password)
+3. Use the app password in `GMAIL_APP_PASSWORD`
+
+
 
 ### Running with Docker
 
@@ -54,27 +82,22 @@ docker-compose up --build
 - pgAdmin: http://localhost:8080  
 - Frontend Dev (if separate): http://localhost:5173
 
----
-
-
-
-
-
----
+## Recent Improvements
+  - Enhanced password security with 8-character minimum and complexity requirements      
+  - Token-based password reset functionality with email
+  - Real-time password validation with visual indicators
+  - Redesigned UI with consistent styling across auth screens
 
 ## Future Improvements
 
-- Registration/Login security improvements, including token based password reset with email or login via social media
-- Admin dashboard to manage users, view logs, and delete spam accounts
-- Clean UI and modularize more components 
-- Mobile responsiveness
-- Barcode scanning for instant food nutrition facts
-- Meal templates, being able to save specific meals and add them easily
-- Monthly/weekly trends with graphs enhancing goal tracking
-- Ability to plan meals and add notes
-- AI Meal suggestions based on earlier meals in the day or planned meals
-
----
+  - Social media login integration (Google, Facebook, etc)
+  - Admin dashboard to manage users, view logs, and delete spam accounts
+  - Mobile responsiveness
+  - Barcode scanning for instant food nutrition facts
+  - Meal templates, being able to save specific meals and add them easily
+  - Monthly/weekly trends with graphs enhancing goal tracking
+  - Ability to plan meals and add notes
+  - AI Meal suggestions based on earlier meals in the day or planned meals
 
 ## License
 
