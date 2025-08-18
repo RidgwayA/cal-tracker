@@ -35,8 +35,22 @@ const Registration = () => {
       return;
     }
 
-    if (formData.password.length < 6) {
-      setError("Password must be at least 6 characters long");
+    // Enhanced password validation
+    const password = formData.password;
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+    if (!/(?=.*[a-z])/.test(password)) {
+      setError("Password must contain at least one lowercase letter");
+      return;
+    }
+    if (!/(?=.*[A-Z])/.test(password)) {
+      setError("Password must contain at least one uppercase letter");
+      return;
+    }
+    if (!/(?=.*\d)/.test(password)) {
+      setError("Password must contain at least one number");
       return;
     }
 
@@ -138,7 +152,7 @@ const Registration = () => {
               <input
                 type="password"
                 name="password"
-                placeholder="Create a secure password (min 6 characters)"
+                placeholder="Create a secure password (min 8 characters, 1 uppercase, 1 lowercase, 1 number)"
                 value={formData.password}
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-borderDark rounded-lg transition-all duration-200 bg-bgCard text-textPrimary"
@@ -157,6 +171,29 @@ const Registration = () => {
                 className="w-full px-4 py-3 border border-borderDark rounded-lg transition-all duration-200 bg-bgCard text-textPrimary"
                 required
               />
+            </div>
+
+            {/* Password requirements */}
+            <div className="bg-bgCard/50 p-4 rounded-lg border border-borderLight">
+              <h3 className="text-sm font-medium text-textPrimary mb-2">Password Requirements:</h3>
+              <ul className="text-xs text-textPrimary/80 space-y-1">
+                <li className="flex items-center space-x-2">
+                  <span className={`w-2 h-2 rounded-full ${formData.password.length >= 8 ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                  <span>At least 8 characters long</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className={`w-2 h-2 rounded-full ${/(?=.*[a-z])/.test(formData.password) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                  <span>One lowercase letter</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className={`w-2 h-2 rounded-full ${/(?=.*[A-Z])/.test(formData.password) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                  <span>One uppercase letter</span>
+                </li>
+                <li className="flex items-center space-x-2">
+                  <span className={`w-2 h-2 rounded-full ${/(?=.*\d)/.test(formData.password) ? 'bg-green-500' : 'bg-gray-300'}`}></span>
+                  <span>One number</span>
+                </li>
+              </ul>
             </div>
 
             <div>
