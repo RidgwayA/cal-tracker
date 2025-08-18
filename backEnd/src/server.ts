@@ -38,7 +38,7 @@ app.use(helmet({
 // Rate limiting for authentication endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 attempts per window per IP
+  max: 15, // 15 attempts per window per IP
   message: { error: 'Too many authentication attempts, please try again later' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -69,10 +69,10 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' })); // Add size limit
 
 // API Routes with rate limiting
-app.use("/api/auth", authLimiter, authRoutes); // Auth routes with strict rate limiting
-app.use("/api/users", apiLimiter, protect, userRoutes); // Protected with general rate limiting
-app.use("/api/meals", apiLimiter, protect, mealRoutes); // Protected with general rate limiting
-app.use("/api/foods", apiLimiter, protect, foodRoutes); // Protected with general rate limiting
+app.use("/api/auth", authLimiter, authRoutes); 
+app.use("/api/users", apiLimiter, protect, userRoutes); 
+app.use("/api/meals", apiLimiter, protect, mealRoutes); 
+app.use("/api/foods", apiLimiter, protect, foodRoutes); 
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
