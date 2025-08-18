@@ -1,10 +1,7 @@
 import { Request, Response } from "express";
 import {pool} from "../db";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { generateToken } from "../uitls/generateToken";
-
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+import { generateToken } from "../utils/generateToken";
 
 export const registerUser = async (req: Request, res: Response) => {
   const { name, email, password, date_of_birth } = req.body;
@@ -21,7 +18,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
     res.status(201).json(result.rows[0]);
   } catch (err) {
-    console.error("Registration error:", err); // 
+    console.error("Registration error:", err); 
     res.status(500).json({ error: "Registration failed" });
   }
 };
