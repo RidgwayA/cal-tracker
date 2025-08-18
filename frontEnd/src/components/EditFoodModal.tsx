@@ -26,9 +26,13 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
     e.preventDefault();
 
     const servingCount = Number(form.serving_count);
+    const token = localStorage.getItem("token");
     const res = await fetch(`/api/foods/${food.id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
       body: JSON.stringify({
         name: form.name,
         calories: Number(form.calories) * servingCount,

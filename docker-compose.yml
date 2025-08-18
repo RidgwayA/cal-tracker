@@ -35,6 +35,7 @@ services:
       DB_PORT: ${DB_PORT}
       JWT_SECRET: ${JWT_SECRET}
       PORT: 4000
+      FRONTEND_URL: "http://localhost:4001"
       # Email Provider
       # Gmail
       GMAIL_USER: ${GMAIL_USER}

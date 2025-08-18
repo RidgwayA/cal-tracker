@@ -53,7 +53,13 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
   };
 
   const confirmDeleteFood = async (foodId: number) => {
-    const res = await fetch(`/api/foods/${foodId}`, { method: "DELETE" });
+    const token = localStorage.getItem("token");
+    const res = await fetch(`/api/foods/${foodId}`, { 
+      method: "DELETE",
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` })
+      }
+    });
     if (res.ok) {
       setFoods(prev => prev.filter(food => food.id !== foodId));
       onFoodDeleted?.(meal.id, foodId);
@@ -74,7 +80,13 @@ const MealCard = ({ meal, onFoodAdded, onFoodUpdated, onFoodDeleted, onMealDelet
   };
 
   const confirmDeleteMeal = async () => {
-    const res = await fetch(`/api/meals/${meal.id}`, { method: "DELETE" });
+    const token = localStorage.getItem("token");
+    const res = await fetch(`/api/meals/${meal.id}`, { 
+      method: "DELETE",
+      headers: {
+        ...(token && { Authorization: `Bearer ${token}` })
+      }
+    });
     if (res.ok) {
       onMealDeleted?.(meal.id);
     } else {

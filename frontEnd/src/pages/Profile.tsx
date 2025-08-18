@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { type UserType } from "../types";
+import { getUserById, updateUserPreferences } from "../services/api";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -41,8 +42,7 @@ const Profile = () => {
       return;
     }
 
-    fetch(`/api/users/${userId}`)
-      .then((res) => res.json())
+    getUserById(userId)
       .then((data) => {
         setUser(data);
         setIsLoading(false);
@@ -69,25 +69,17 @@ const Profile = () => {
     };
 
     try {
-      const res = await fetch(`/api/users/${userId}/preferences`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatePayload),
+      await updateUserPreferences(userId, updatePayload);
+      
+      setUser((prev) => {
+        const updated = { ...prev, ...updatePayload };
+        if (editingField === "name") {
+          localStorage.setItem("userName", updated.name);
+        }
+        return updated;
       });
-
-      if (res.ok) {
-        setUser((prev) => {
-          const updated = { ...prev, ...updatePayload };
-          if (editingField === "name") {
-            localStorage.setItem("userName", updated.name);
-          }
-          return updated;
-        });
-        setEditingField(null);
-        setTempValue("");
-      } else {
-        throw new Error("Failed to update profile");
-      }
+      setEditingField(null);
+      setTempValue("");
     } catch (err) {
       console.error("Profile update error:", err);
       alert("Failed to update profile. Please try again.");

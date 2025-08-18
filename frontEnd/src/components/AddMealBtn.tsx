@@ -25,6 +25,7 @@ const AddMealBtn = ({ setMeals, selectedDate }: Props) => {
     }
 
     try {
+      const token = localStorage.getItem("token");
       const res = await fetch("/api/meals", {
         method: "POST",
         body: JSON.stringify({ 
@@ -32,7 +33,10 @@ const AddMealBtn = ({ setMeals, selectedDate }: Props) => {
           user_id: Number(userId), 
           date: selectedDate
         }),
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          ...(token && { Authorization: `Bearer ${token}` })
+        },
       });
 
       if (!res.ok) {

@@ -26,9 +26,13 @@ const AddFoodModal = ({ mealId, onClose, onAdd }: Props) => {
     e.preventDefault();
 
     const servingCount = Number(form.serving_count);
+    const token = localStorage.getItem("token");
     const res = await fetch(`/api/foods/${mealId}`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        "Content-Type": "application/json",
+        ...(token && { Authorization: `Bearer ${token}` })
+      },
       body: JSON.stringify({
         name: form.name,
         calories: Number(form.calories) * servingCount,

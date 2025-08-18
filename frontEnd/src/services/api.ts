@@ -1,6 +1,34 @@
 // src/services/api.ts
 import { type MealType, type UserType } from "../types";
 
+// Helper function to get auth headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token");
+  return {
+    "Content-Type": "application/json",
+    ...(token && { Authorization: `Bearer ${token}` }),
+  };
+};
+
+// Helper function to handle API responses
+const handleResponse = async (response: Response) => {
+  if (response.status === 401) {
+    // Token expired or invalid
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userName");
+    window.location.href = "/login";
+    throw new Error("Session expired. Please log in again.");
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
 // ========== MEALS ==========
 
 export const fetchMealsForDate = async (
@@ -8,9 +36,11 @@ export const fetchMealsForDate = async (
   date: string
 ): Promise<MealType[]> => {
   try {
-    const res = await fetch(`/api/meals/${userId}/${date}`); 
+    const res = await fetch(`/api/meals/${userId}/${date}`, {
+      headers: getAuthHeaders(),
+    }); 
 
-    const data = await res.json();
+    const data = await handleResponse(res);
 
     if (!Array.isArray(data)) {
       console.error("Expected array, got:", data);
@@ -27,9 +57,10 @@ export const fetchMealsForDate = async (
 // ========== USER ==========
 
 export const getUserById = async (userId: number): Promise<UserType> => {
-  const res = await fetch(`/api/users/${userId}`);
-  if (!res.ok) throw new Error("Failed to fetch user");
-  return res.json();
+  const res = await fetch(`/api/users/${userId}`, {
+    headers: getAuthHeaders(),
+  });
+  return handleResponse(res);
 };
 
 export const updateUserPreferences = async (
@@ -38,10 +69,10 @@ export const updateUserPreferences = async (
 ): Promise<void> => {
   const res = await fetch(`/api/users/${userId}/preferences`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders(),
     body: JSON.stringify(data),
   });
-  if (!res.ok) throw new Error("Failed to update preferences");
+  await handleResponse(res);
 };
 
 // ========== AUTH ==========
