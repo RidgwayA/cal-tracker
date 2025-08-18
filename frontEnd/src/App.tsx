@@ -3,6 +3,8 @@ import Login from "../src/pages/Login";
 import Dashboard from "../src/pages/Dashboard";
 import Profile from "../src/pages/Profile";
 import Registration from "../src/pages/Registration";
+import ForgotPassword from "./pages/RequestPasswordReset";
+import ResetPassword from "./pages/Resetpassword";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/register" element={<Registration />} />
+        <Route path="/request-reset" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

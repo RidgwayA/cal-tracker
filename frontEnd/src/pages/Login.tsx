@@ -49,7 +49,7 @@ const Login = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-myWhite/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-borderLight"
+          className="bg-textInverse/80 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-borderLight"
         >
           {successMessage && (
             <div className="mb-6 p-4 bg-successBg border border-successBorder rounded-lg">
@@ -119,6 +119,18 @@ const Login = () => {
                 className="text-primary hover:text-primaryHover font-medium underline underline-offset-2 cursor-pointer"
               >
                 Create one here
+              </button>
+            </p>
+          </div>
+                    <div className="mt-2 text-center">
+            <p className="text-sm text-textPrimary">
+              Forgot your password?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/request-reset")}
+                className="text-primary hover:text-primaryHover font-medium underline underline-offset-2 cursor-pointer"
+              >
+                Reset it here
               </button>
             </p>
           </div>
