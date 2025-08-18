@@ -17,7 +17,7 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Security middleware
+// Security middleware (relaxed for HTTP access)
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -27,9 +27,12 @@ app.use(helmet({
       imgSrc: ["'self'", "data:", "blob:"],
       fontSrc: ["'self'"],
       connectSrc: ["'self'"],
+      upgradeInsecureRequests: null, // Don't force HTTPS
     }
   },
-  crossOriginEmbedderPolicy: false // Allow serving React app
+  crossOriginEmbedderPolicy: false, // Allow serving React app
+  crossOriginOpenerPolicy: false,   // Disable COOP for HTTP
+  originAgentCluster: false         // Disable Origin-Agent-Cluster for HTTP
 }));
 
 // Rate limiting for authentication endpoints
@@ -52,7 +55,12 @@ const apiLimiter = rateLimit({
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:5173",
+  origin: [
+    process.env.FRONTEND_URL || "http://localhost:5173",
+    "http://localhost:4001",
+    /^http:\/\/192\.168\.\d+\.\d+:4001$/,  // Allow local network IPs
+    /^http:\/\/10\.\d+\.\d+\.\d+:4001$/,   // Allow private network IPs
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization']
