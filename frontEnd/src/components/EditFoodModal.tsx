@@ -50,135 +50,166 @@ const EditFoodModal = ({ food, onClose, onUpdate }: EditFoodProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-bgDark/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-bgCard rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
-        <div className="p-6 border-b border-borderLight">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-                <span className="text-lg">✏️</span>
-              </div>
-              <h2 className="text-xl font-semibold text-slate-800">Edit Food Item</h2>
-            </div>
-            <button
-              onClick={onClose}
-              className="p-2 text-textPrimary hover:text-error hover:bg-bgDark/10 rounded-lg transition-all duration-200 cursor-pointer"
+    <div className="fixed inset-0 bg-myBlack/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-bgCard rounded-xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[95vh] sm:max-h-[90vh] md:max-h-[85vh] flex flex-col">
+        {/* Header */}
+        <div className="p-3 sm:p-4 flex items-center justify-between">
+          <h2 className="text-base sm:text-lg font-semibold text-textPrimary cursor-pointer">
+            Edit Food
+          </h2>
+          <button
+            onClick={onClose}
+            className="p-2 text-textPrimary hover:text-error hover:bg-bgDark/10 rounded-lg transition-all duration-200 cursor-pointer"
+          >
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">Food Name</label>
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleChange}
-              className="w-full px-4 py-3 border border-borderLight rounded-lg "
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto p-3 sm:p-4"
+          id="edit-food-form"
+        >
+          <div className="space-y-3 sm:space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Serving Size</label>
+              <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                Food Name
+              </label>
               <input
-                name="serving_size"
-                value={form.serving_size}
+                name="name"
+                value={form.name}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-borderLight rounded-lg"
-                placeholder="e.g., 100g, 1 cup"
+                className="w-full px-3 py-2 text-sm border border-borderDark rounded-lg "
+                placeholder="e.g., Chicken Breast"
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Servings</label>
-              <input
-                name="serving_count"
-                type="number"
-                step="0.1"
-                min="0.1"
-                value={form.serving_count}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-borderLight rounded-lg"
-                required
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                  Serving Size
+                </label>
+                <input
+                  name="serving_size"
+                  value={form.serving_size}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm border border-borderDark rounded-lg"
+                  placeholder="e.g., 100g, 1 cup"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                  Servings
+                </label>
+                <input
+                  name="serving_count"
+                  type="number"
+                  step="0.1"
+                  min="0.1"
+                  value={form.serving_count}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 text-sm border border-borderDark rounded-lg"
+                  placeholder="1"
+                  required
+                />
+              </div>
+            </div>
             <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Calories (per serving)</label>
+              <p>Nutritional Facts are Per Serving</p>
+            </div>
+
+            <div>
+              <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                Calories
+              </label>
               <input
                 name="calories"
                 type="number"
                 value={form.calories}
                 onChange={handleChange}
-                className="w-full px-4 py-3 border border-borderLight rounded-lg"
+                className="w-full px-3 py-2 text-sm border border-borderDark rounded-lg "
+                placeholder="250"
                 required
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Protein (per serving)</label>
-              <input
-                name="protein"
-                type="number"
-                step="0.1"
-                value={form.protein}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-borderLight rounded-lg "
-                required
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                  Protein
+                </label>
+                <input
+                  name="protein"
+                  type="number"
+                  step="0.1"
+                  value={form.protein}
+                  onChange={handleChange}
+                  className="w-full px-2 py-2 text-sm border border-borderDark rounded"
+                  placeholder="25"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                  Carbs
+                </label>
+                <input
+                  name="carbs"
+                  type="number"
+                  step="0.1"
+                  value={form.carbs}
+                  onChange={handleChange}
+                  className="w-full px-2 py-2 text-sm border border-borderDark rounded "
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-textPrimary mb-1">
+                  Fat
+                </label>
+                <input
+                  name="fat"
+                  type="number"
+                  step="0.1"
+                  value={form.fat}
+                  onChange={handleChange}
+                  className="w-full px-2 py-2 text-sm border border-borderDark rounded "
+                  placeholder="0"
+                />
+              </div>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-textPrimary mb-2">Carbs (per serving)</label>
-              <input
-                name="carbs"
-                type="number"
-                step="0.1"
-                value={form.carbs}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-borderLight rounded-lg "
-                placeholder="0"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Fat (per serving)</label>
-              <input
-                name="fat"
-                type="number"
-                step="0.1"
-                value={form.fat}
-                onChange={handleChange}
-                className="w-full px-4 py-3 border border-borderLight rounded-lg "
-                placeholder="0"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end gap-3 pt-6">
-            <button 
-              type="button" 
-              onClick={onClose}
-              className="px-6 py-3 bg-offWhite text-slate-700 rounded-lg hover:bg-error/40 transition-all duration-200 font-medium border border-borderLight cursor-pointer"
-            >
-              Cancel
-            </button>
-            <button 
-              type="submit"
-              className="px-6 py-3 bg-primary text-textInverse rounded-lg hover:bg-primaryHover transition-all duration-200 font-medium shadow-lg shadow-blue-500/25 cursor-pointer"
-            >
-              Update Food
-            </button>
           </div>
         </form>
+
+        <div className="p-3 sm:p-4 flex flex-col sm:flex-row gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="flex-1 px-3 py-2 bg-offWhite text-textPrimary rounded-lg hover:bg-error/40 border-1 font-medium text-sm cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            form="edit-food-form"
+            className="flex-1 px-3 py-2 bg-primary text-textInverse rounded-lg hover:bg-primaryHover font-medium text-sm cursor-pointer"
+          >
+            Update Food
+          </button>
+        </div>
       </div>
     </div>
   );
