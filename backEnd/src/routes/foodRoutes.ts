@@ -1,8 +1,11 @@
 import express from "express";
-import { addFoodToMeal, getFoodsByMeal, updateFood, deleteFood } from "../controllers/foodController";
+import { addFoodToMeal, getFoodsByMeal, updateFood, deleteFood, getUserSavedFoods } from "../controllers/foodController";
 import { validateFood } from "../middleware/validation";
 
 const router = express.Router();
+
+// Get saved foods for authenticated user
+router.get("/user/saved", getUserSavedFoods);
 
 // Add food to a meal by ID
 router.post("/:mealId", validateFood, addFoodToMeal);

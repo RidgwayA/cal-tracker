@@ -47,10 +47,10 @@ export const addFoodToMeal = async (req: AuthRequest, res: Response) => {
     }
     // Insert the new food
     const result = await pool.query(
-      `INSERT INTO foods (meal_id, name, calories, protein, carbs, fat, serving_size, serving_count)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      `INSERT INTO foods (meal_id, user_id, name, calories, protein, carbs, fat, serving_size, serving_count)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
        RETURNING *`,
-      [mealId, name, calories, protein, carbs, fat, serving_size, serving_count]
+      [mealId, authenticatedUserId, name, calories, protein, carbs, fat, serving_size, serving_count]
     );
 
     // Update the meal's total calories
@@ -172,6 +172,28 @@ export const deleteFood = async (req: AuthRequest, res: Response) => {
     res.status(200).json({ message: "Food item deleted successfully" });
   } catch (err) {
     console.error("Error deleting food:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// GET /api/foods/user/saved - Get all unique food items for a user
+export const getUserSavedFoods = async (req: AuthRequest, res: Response) => {
+  const authenticatedUserId = req.user?.id;
+
+  try {
+    // Get distinct food items for the user, ordered by most recent
+    const result = await pool.query(
+      `SELECT DISTINCT ON (name, serving_size) 
+       id, name, calories, protein, carbs, fat, serving_size, created_at
+       FROM foods 
+       WHERE user_id = $1 
+       ORDER BY name, serving_size, created_at DESC`,
+      [authenticatedUserId]
+    );
+
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching saved foods:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 };

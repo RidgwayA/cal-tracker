@@ -1,5 +1,5 @@
 // src/services/api.ts
-import { type MealType, type UserType } from "../types";
+import { type MealType, type UserType, type FoodType } from "../types";
 
 // Helper function to get auth headers
 const getAuthHeaders = () => {
@@ -90,4 +90,26 @@ export const loginUser = async (email: string, password: string) => {
   }
 
   return response.json();
+};
+
+// ========== FOODS ==========
+
+export const fetchUserSavedFoods = async (): Promise<FoodType[]> => {
+  try {
+    const res = await fetch("/api/foods/user/saved", {
+      headers: getAuthHeaders(),
+    });
+
+    const data = await handleResponse(res);
+
+    if (!Array.isArray(data)) {
+      console.error("Expected array, got:", data);
+      return [];
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching saved foods:", error);
+    return [];
+  }
 };

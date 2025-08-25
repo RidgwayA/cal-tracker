@@ -26,6 +26,7 @@ CREATE TABLE meals (
 CREATE TABLE foods (
     id SERIAL PRIMARY KEY,
     meal_id INTEGER REFERENCES meals(id) ON DELETE CASCADE,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     name VARCHAR(255) NOT NULL,
     calories INTEGER NOT NULL,
     protein INTEGER DEFAULT 0,
