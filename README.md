@@ -64,6 +64,7 @@ cp example.env .env
 - `GMAIL_*` - Gmail SMTP settings for password reset emails
 - `EMAIL_FROM` - Email address for outgoing messages
 - `PGADMIN_*` - pgAdmin web interface credentials
+- `CLOUDFLARE_TUNNEL_TOKEN*` - your cloudflare tunnel token
 
 **Gmail Setup for Password Reset:**
 1. Enable 2-factor authentication on your Gmail account
@@ -74,13 +75,13 @@ cp example.env .env
 
 ### Running with Docker
 
-```bash
-docker-compose up --build
-```
-
+docker-compose up --build (Local docker container for devlopment)
 - App: http://localhost:4001  
 - pgAdmin: http://localhost:8080  
-- Frontend Dev (if separate): http://localhost:5173
+- Frontend Dev (Testing wiht npm run dev): http://localhost:5173
+
+docker-compose --profile production up -d
+- App: https://[yoursubdomain].[yourdomain.com]
 
 ## Recent Improvements
   - Enhanced password security with 8-character minimum and complexity requirements      
